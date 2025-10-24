@@ -1,0 +1,23 @@
+name: Pages Branch Workflow
+
+on:
+  push:
+    branches: [pages]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate README
+        run: |
+          if [ ! -f "README.md" ]; then
+            echo "❌ README.md not found"
+            exit 1
+          fi
+          echo "✅ README.md exists"
+
+      - name: Pages validation complete
+        run: echo "✅ Pages branch ready for deployment"
