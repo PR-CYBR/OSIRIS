@@ -1,0 +1,98 @@
+name: Auto PR from prod to pages
+
+on:
+  push:
+    branches: [prod]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update status in README
+        run: |
+          # Generate timestamp
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          # Update or append last updated timestamp
+          if grep -q "Last Updated:" README.md; then
+            sed -i "s/Last Updated:.*/Last Updated: ${TIMESTAMP}/" README.md
+          else
+            echo "" >> README.md
+            echo "Last Updated: ${TIMESTAMP}" >> README.md
+          fi
+          
+          echo "✅ Updated README with timestamp"
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if git diff --quiet README.md; then
+            echo "No changes to commit"
+          else
+            git add README.md
+            git commit -m "chore: update status timestamp [skip ci]"
+            git push origin prod
+          fi
+
+      - name: Create or update PR to pages
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:prod`,
+              base: 'pages',
+              state: 'open'
+            });
+
+            const title = '📄 Auto-sync prod → pages';
+            const body = `
+            ## Automated Pull Request
+            
+            This PR automatically syncs the status page from \`prod\` to \`pages\` branch for GitHub Pages deployment.
+            
+            **Source:** \`prod\`
+            **Target:** \`pages\`
+            **Status:** Automated merge after validation
+            
+            ### Changes
+            Updated README with latest system status.
+            
+            ---
+            _This PR was created automatically by the CI/CD pipeline._
+            `;
+
+            if (prs.length === 0) {
+              try {
+                await github.rest.pulls.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  head: 'prod',
+                  base: 'pages',
+                  body: body
+                });
+                console.log('✅ Created new PR from prod to pages');
+              } catch (error) {
+                if (error.status === 422) {
+                  console.log('ℹ️ No changes to sync or pages branch does not exist yet');
+                } else {
+                  throw error;
+                }
+              }
+            } else {
+              console.log('ℹ️ PR already exists from prod to pages');
+            }
