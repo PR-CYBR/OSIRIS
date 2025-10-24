@@ -1,0 +1,58 @@
+{
+  "name": "osiris",
+  "version": "0.1.0",
+  "description": "OSIRIS - Orbital, Spatial, and Integrated Reconnaissance Intelligence System for multi-domain anomaly detection",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
+    "format": "prettier --write \"**/*.{js,ts,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
+    "build": "echo 'Build step for serverless modules'",
+    "deploy:dev": "echo 'Deploy to dev environment'",
+    "deploy:test": "echo 'Deploy to test environment'",
+    "deploy:stage": "echo 'Deploy to stage environment'",
+    "deploy:prod": "echo 'Deploy to prod environment'",
+    "status": "node scripts/generate-status.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PR-CYBR/OSIRIS.git"
+  },
+  "keywords": [
+    "anomaly-detection",
+    "multi-domain",
+    "ai",
+    "machine-learning",
+    "serverless",
+    "orbital",
+    "atmospheric",
+    "terrestrial",
+    "data-fusion"
+  ],
+  "author": "PR-CYBR",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-jest": "^27.0.0",
+    "jest": "^29.5.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1400.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
