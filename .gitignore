@@ -1,3 +1,21 @@
+# Test Results
+test-results/
+*.log
+
+# Node modules (if any)
+node_modules/
+package-lock.json
+
+# Python (if any)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# IDE
 # OSIRIS - Node.js Serverless Platform .gitignore
 
 # Logs
@@ -116,6 +134,14 @@ desktop.ini
 *.swp
 *.swo
 *~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+/tmp/
+*.tmp
 .project
 .classpath
 .c9/
