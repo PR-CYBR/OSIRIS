@@ -36,7 +36,7 @@ The OSIRIS workflow includes:
 
 ## Getting Started
 
-### Running Tests
+### Running Tests Locally
 
 Execute the test suite for your branch:
 
@@ -45,6 +45,24 @@ Execute the test suite for your branch:
 ```
 
 The test runner automatically detects your branch and runs the appropriate test suite.
+
+### First-Time Setup
+
+To enable all workflow features (GitHub Pages, auto-PRs, etc.):
+
+1. Follow the setup guide: [`.github/SETUP.md`](.github/SETUP.md)
+2. Enable GitHub Pages in repository settings
+3. Configure workflow permissions
+
+### Workflow Examples
+
+See practical examples of the workflow in action: [`.github/EXAMPLES.md`](.github/EXAMPLES.md)
+
+## Documentation
+
+- 📘 [Setup Guide](.github/SETUP.md) - Configure the workflow in your repository
+- 📖 [Usage Examples](.github/EXAMPLES.md) - Real-world workflow scenarios
+- 📋 [Specification](.github/spec/ci-cd-spec.md) - Technical specification (Spec-Kit compliant)
 
 ## Latest Test Results
 
