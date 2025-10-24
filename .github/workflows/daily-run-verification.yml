@@ -1,0 +1,121 @@
+name: Daily Workflow Run Verification
+
+permissions:
+  issues: write
+  actions: read
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # Run daily at 5 AM UTC
+  workflow_dispatch:
+
+jobs:
+  check-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check workflow runs and open issues if necessary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflows = [
+              { name: 'Spec-Kit Validation', file: 'spec-kit.yml', branch: 'main' },
+              { name: 'Dev Branch Workflow', file: 'dev.yml', branch: 'dev' },
+              { name: 'Test Branch Workflow', file: 'test.yml', branch: 'test' },
+              { name: 'Stage Branch Workflow', file: 'stage.yml', branch: 'stage' },
+              { name: 'Production Branch Workflow', file: 'prod.yml', branch: 'prod' },
+              { name: 'Pages Branch Workflow', file: 'pages.yml', branch: 'pages' }
+            ];
+
+            for (const wf of workflows) {
+              try {
+                const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: wf.file,
+                  branch: wf.branch,
+                  per_page: 1
+                });
+
+                const latest = runs.workflow_runs[0];
+                
+                if (!latest) {
+                  console.log(`ℹ️ No runs found for ${wf.name} on branch ${wf.branch}`);
+                  continue;
+                }
+
+                if (latest.conclusion !== 'success') {
+                  const title = `Workflow "${wf.name}" failing on branch ${wf.branch}`;
+                  const body = `
+            ## Workflow Failure Alert
+
+            The latest run of workflow **${wf.name}** on branch **${wf.branch}** concluded with status: **${latest.conclusion}**
+
+            **Details:**
+            - Run ID: ${latest.id}
+            - Run URL: ${latest.html_url}
+            - Conclusion: ${latest.conclusion}
+            - Completed: ${latest.updated_at}
+
+            **Action Required:**
+            Please investigate the failure and fix the issues.
+
+            ---
+            _This issue was created automatically by daily workflow verification._
+            `;
+
+                  const { data: issues } = await github.rest.issues.listForRepo({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    state: 'open',
+                    labels: 'workflow-failure'
+                  });
+
+                  const existingIssue = issues.find(issue => issue.title === title);
+
+                  if (!existingIssue) {
+                    await github.rest.issues.create({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      title: title,
+                      body: body,
+                      labels: ['workflow-failure', 'automated']
+                    });
+                    console.log(`✅ Created issue for failing workflow: ${wf.name}`);
+                  } else {
+                    console.log(`ℹ️ Issue already exists for ${wf.name}`);
+                  }
+                } else {
+                  console.log(`✅ ${wf.name} on ${wf.branch} is passing`);
+                  
+                  // Close any open issues for this workflow if it's now passing
+                  const title = `Workflow "${wf.name}" failing on branch ${wf.branch}`;
+                  const { data: issues } = await github.rest.issues.listForRepo({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    state: 'open',
+                    labels: 'workflow-failure'
+                  });
+
+                  const existingIssue = issues.find(issue => issue.title === title);
+                  if (existingIssue) {
+                    await github.rest.issues.update({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: existingIssue.number,
+                      state: 'closed'
+                    });
+                    await github.rest.issues.createComment({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: existingIssue.number,
+                      body: '✅ Workflow is now passing. Closing this issue automatically.'
+                    });
+                    console.log(`✅ Closed resolved issue for ${wf.name}`);
+                  }
+                }
+              } catch (error) {
+                console.error(`Error checking workflow ${wf.name}:`, error.message);
+              }
+            }
+
+            console.log('✅ Daily workflow verification complete');

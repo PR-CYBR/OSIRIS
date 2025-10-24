@@ -1,0 +1,70 @@
+name: Auto PR from stage to prod
+
+on:
+  push:
+    branches: [stage]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or update PR to prod
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:stage`,
+              base: 'prod',
+              state: 'open'
+            });
+
+            const title = '🚀 Auto-sync stage → prod';
+            const body = `
+            ## Automated Pull Request
+            
+            This PR automatically syncs changes from \`stage\` to \`prod\` branch.
+            
+            **Source:** \`stage\`
+            **Target:** \`prod\`
+            **Status:** Manual approval required for production deployment
+            
+            ### Changes
+            Latest commits from stage branch that have been validated.
+            
+            ---
+            _This PR was created automatically by the CI/CD pipeline._
+            `;
+
+            if (prs.length === 0) {
+              try {
+                await github.rest.pulls.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  head: 'stage',
+                  base: 'prod',
+                  body: body
+                });
+                console.log('✅ Created new PR from stage to prod');
+              } catch (error) {
+                if (error.status === 422) {
+                  console.log('ℹ️ No changes to sync or prod branch does not exist yet');
+                } else {
+                  throw error;
+                }
+              }
+            } else {
+              console.log('ℹ️ PR already exists from stage to prod');
+            }

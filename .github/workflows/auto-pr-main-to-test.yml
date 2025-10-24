@@ -1,0 +1,70 @@
+name: Auto PR from main to test
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or update PR to test
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:main`,
+              base: 'test',
+              state: 'open'
+            });
+
+            const title = '🔄 Auto-sync main → test';
+            const body = `
+            ## Automated Pull Request
+            
+            This PR automatically syncs changes from \`main\` to \`test\` branch.
+            
+            **Source:** \`main\`
+            **Target:** \`test\`
+            **Status:** Automated merge after validation
+            
+            ### Changes
+            Latest commits from main branch.
+            
+            ---
+            _This PR was created automatically by the CI/CD pipeline._
+            `;
+
+            if (prs.length === 0) {
+              try {
+                await github.rest.pulls.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  head: 'main',
+                  base: 'test',
+                  body: body
+                });
+                console.log('✅ Created new PR from main to test');
+              } catch (error) {
+                if (error.status === 422) {
+                  console.log('ℹ️ No changes to sync or test branch does not exist yet');
+                } else {
+                  throw error;
+                }
+              }
+            } else {
+              console.log('ℹ️ PR already exists from main to test');
+            }
