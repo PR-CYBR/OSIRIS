@@ -7,10 +7,10 @@
 
 /**
  * Process orbital data event
- * @param {Object} event - The incoming data event
+ * @param {Object} _event - The incoming data event
  * @returns {Promise<Object>} Processing result
  */
-async function processOrbitalData(event) {
+async function processOrbitalData(_event) {
   // TODO: Implement orbital data processing
   return {
     status: 'processed',

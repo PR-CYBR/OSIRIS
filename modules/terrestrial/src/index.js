@@ -7,10 +7,10 @@
 
 /**
  * Process terrestrial data event
- * @param {Object} event - The incoming data event
+ * @param {Object} _event - The incoming data event
  * @returns {Promise<Object>} Processing result
  */
-async function processTerrestrialData(event) {
+async function processTerrestrialData(_event) {
   // TODO: Implement terrestrial data processing
   return {
     status: 'processed',

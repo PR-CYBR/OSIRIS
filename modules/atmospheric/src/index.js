@@ -7,10 +7,10 @@
 
 /**
  * Process atmospheric data event
- * @param {Object} event - The incoming data event
+ * @param {Object} _event - The incoming data event
  * @returns {Promise<Object>} Processing result
  */
-async function processAtmosphericData(event) {
+async function processAtmosphericData(_event) {
   // TODO: Implement atmospheric data processing
   return {
     status: 'processed',
