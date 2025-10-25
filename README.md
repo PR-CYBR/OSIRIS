@@ -103,6 +103,34 @@ main → test → stage → prod → pages
 
 All branches have automated validation and promotion via GitHub Actions.
 
+## 🧪 Testing Strategy
+
+OSIRIS enforces the quality gates defined in the [project constitution](.specify/constitution.md) through an automated, fail-fast
+test harness.
+
+### Local Workflow
+
+```bash
+npm ci
+tests/run-tests.sh
+```
+
+The `tests/run-tests.sh` script orchestrates every mandatory check and produces a consolidated summary in `test-results/summary.md`.
+
+### Suite Breakdown
+
+| Category | Command | What it validates |
+|----------|---------|-------------------|
+| Static analysis | `npm run lint` | Enforces code quality standards before any runtime work begins. |
+| Unit tests | `npm test -- --runInBand` | Executes Jest-based unit coverage for shared utilities and future module logic. |
+| Integration verification | `tests/integration/run-integration.sh` | Confirms module documentation stays in sync with the technical specification and required sections exist for every domain. |
+| End-to-end smoke | `node tests/e2e/verify-status-dashboard.js` | Ensures the public system status dashboard in the README exposes all critical components and latest test summaries. |
+| Performance baseline | `node tests/performance/verify-performance-baseline.js` | Guards the performance metrics mandated by the constitution (latency, accuracy, MTTR, etc.). |
+| Domain health | `node scripts/generate-status.js` | Generates the platform health snapshot consumed by dashboards and monitoring jobs. |
+
+These checks run on every push and pull request through the `OSIRIS CI/CD Workflow` GitHub Action, blocking merges until the
+suite succeeds.
+
 ## 📚 Documentation
 
 - [Constitution](.specify/constitution.md) - Project principles and governance

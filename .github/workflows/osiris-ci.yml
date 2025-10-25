@@ -32,45 +32,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup test environment
-        run: |
-          echo "Setting up test environment for branch: ${{ github.ref_name }}"
-          mkdir -p test-results
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-      - name: Run branch-specific tests
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Run comprehensive test suite
         id: run-tests
         run: |
-          echo "Running tests for branch: ${{ github.ref_name }}"
-          
-          # Simulate branch-specific test execution
-          # In a real scenario, this would run actual test suites
-          TEST_RESULT="success"
-          TEST_SUMMARY="All tests passed"
-          
-          # Example: Different test suites based on branch patterns
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
-            echo "Running full test suite for main branch..."
-            # Add main branch test commands here
-          elif [[ "${{ github.ref_name }}" == "develop" ]]; then
-            echo "Running development test suite..."
-            # Add develop branch test commands here
-          elif [[ "${{ github.ref_name }}" == feature/* ]]; then
-            echo "Running feature-specific tests..."
-            # Add feature branch test commands here
-          elif [[ "${{ github.ref_name }}" == bugfix/* ]]; then
-            echo "Running bugfix validation tests..."
-            # Add bugfix branch test commands here
+          set +e
+          tests/run-tests.sh
+          exit_code=$?
+          set -e
+
+          if [ -f test-results/summary.md ]; then
+            summary_line=$(tr '\n' ' ' < test-results/summary.md | sed 's/  */ /g')
+          else
+            summary_line="No summary produced"
           fi
-          
-          # Save test results
-          echo "result=$TEST_RESULT" >> $GITHUB_OUTPUT
-          echo "summary=$TEST_SUMMARY" >> $GITHUB_OUTPUT
-          echo "## Test Results" > test-results/summary.md
-          echo "- **Branch**: ${{ github.ref_name }}" >> test-results/summary.md
-          echo "- **Commit**: ${{ github.sha }}" >> test-results/summary.md
-          echo "- **Status**: $TEST_RESULT" >> test-results/summary.md
-          echo "- **Summary**: $TEST_SUMMARY" >> test-results/summary.md
-          echo "- **Timestamp**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> test-results/summary.md
+
+          if [ "$exit_code" -eq 0 ]; then
+            echo "result=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "result=failure" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "summary=${summary_line}" >> "$GITHUB_OUTPUT"
+          exit "$exit_code"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

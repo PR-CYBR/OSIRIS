@@ -1,79 +1,88 @@
-#!/bin/bash
-# OSIRIS Test Runner
-# This script runs branch-specific tests based on the current branch
+#!/usr/bin/env bash
 
-set -e
+# OSIRIS Comprehensive Test Runner
+#
+# Executes the full validation workflow expected by the OSIRIS constitution.
+# Includes linting, unit tests, integration verification, end-to-end smoke
+# checks, performance baseline validation, and domain-specific status
+# generation. The script is intentionally fail-fast.
 
-BRANCH_NAME=${1:-$(git rev-parse --abbrev-ref HEAD)}
-TEST_RESULTS_DIR="test-results"
+set -euo pipefail
 
-echo "=========================================="
-echo "OSIRIS Test Runner"
-echo "Branch: $BRANCH_NAME"
-echo "=========================================="
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
 
-# Create test results directory
-mkdir -p "$TEST_RESULTS_DIR"
+RESULTS_DIR="${RESULTS_DIR:-test-results}"
+mkdir -p "$RESULTS_DIR"
 
-# Function to run tests and log results
-run_test_suite() {
-    local test_name=$1
-    echo ""
-    echo "Running $test_name..."
-    
-    # Simulate test execution
-    # In a real scenario, replace this with actual test commands
-    sleep 1
-    echo "✓ $test_name completed successfully"
+declare -A STEP_STATUS=()
+STEP_ORDER=()
+
+log() {
+  printf '\n[%s] %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" "$1"
 }
 
-# Branch-specific test execution
-case "$BRANCH_NAME" in
-    main)
-        echo "Running full production test suite..."
-        run_test_suite "Unit Tests"
-        run_test_suite "Integration Tests"
-        run_test_suite "End-to-End Tests"
-        run_test_suite "Performance Tests"
-        run_test_suite "Security Tests"
-        ;;
-    develop)
-        echo "Running development test suite..."
-        run_test_suite "Unit Tests"
-        run_test_suite "Integration Tests"
-        run_test_suite "API Tests"
-        ;;
-    feature/*)
-        echo "Running feature-specific tests..."
-        run_test_suite "Unit Tests"
-        run_test_suite "Feature Tests"
-        ;;
-    bugfix/*)
-        echo "Running bugfix validation tests..."
-        run_test_suite "Unit Tests"
-        run_test_suite "Regression Tests"
-        ;;
-    *)
-        echo "Running default test suite..."
-        run_test_suite "Basic Tests"
-        ;;
-esac
+run_step() {
+  local name="$1"
+  shift
+  STEP_ORDER+=("$name")
+  log "▶️  ${name}"
 
-# Generate test summary
-cat > "$TEST_RESULTS_DIR/summary.txt" <<EOF
-OSIRIS Test Results
-==================
-Branch: $BRANCH_NAME
-Date: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
-Status: SUCCESS
-All tests passed successfully.
-EOF
+  if "$@"; then
+    STEP_STATUS["$name"]="success"
+    log "✅ ${name}"
+  else
+    STEP_STATUS["$name"]="failure"
+    log "❌ ${name}"
+    return 1
+  fi
+}
 
-echo ""
-echo "=========================================="
-echo "All tests completed successfully!"
-echo "=========================================="
-echo ""
-cat "$TEST_RESULTS_DIR/summary.txt"
+generate_summary() {
+  local exit_code="$1"
+  local overall="failure"
+  if [[ "$exit_code" -eq 0 ]]; then
+    overall="success"
+  fi
 
-exit 0
+  local summary_file="$RESULTS_DIR/summary.md"
+  {
+    echo "## Test Results"
+    echo "- **Branch**: ${BRANCH_NAME:-$(git rev-parse --abbrev-ref HEAD)}"
+    echo "- **Status**: $overall"
+    echo "- **Timestamp**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+    echo ""
+    echo "### Step Summary"
+    for step in "${STEP_ORDER[@]}"; do
+      local status="${STEP_STATUS[$step]:-not-run}"
+      local icon="⚪"
+      if [[ "$status" == "success" ]]; then
+        icon="✅"
+      elif [[ "$status" == "failure" ]]; then
+        icon="❌"
+      fi
+      echo "- ${icon} ${step}"
+    done
+  } > "$summary_file"
+
+  printf '\n==========================================\n'
+  printf 'Test Summary (%s)\n' "$overall"
+  printf '==========================================\n\n'
+  cat "$summary_file"
+
+  return "$exit_code"
+}
+
+trap 'generate_summary $?' EXIT
+
+# --- Validation Steps ---
+
+run_step "Lint" npm run lint
+run_step "Unit Tests" npm test -- --runInBand
+run_step "Integration Verification" tests/integration/run-integration.sh
+run_step "E2E Status Smoke" node tests/e2e/verify-status-dashboard.js
+run_step "Performance Baseline" node tests/performance/verify-performance-baseline.js
+run_step "Domain Status Generator" node scripts/generate-status.js > "$RESULTS_DIR/status.log"
+
+log "All validation steps executed."
+
