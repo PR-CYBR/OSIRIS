@@ -1,6 +1,6 @@
 /**
  * Terrestrial Data Module - Main Entry Point
- * 
+ *
  * Processes ground-based sensor and network data including seismic activity,
  * infrastructure monitoring, and network patterns.
  */
@@ -16,7 +16,7 @@ async function processTerrestrialData(_event) {
     status: 'processed',
     timestamp: new Date().toISOString(),
     module: 'terrestrial',
-    message: 'Terrestrial data processing not yet implemented'
+    message: 'Terrestrial data processing not yet implemented',
   };
 }
 
@@ -28,24 +28,24 @@ async function processTerrestrialData(_event) {
 exports.handler = async (event) => {
   try {
     const result = await processTerrestrialData(event);
-    
+
     return {
       statusCode: 200,
-      body: JSON.stringify(result)
+      body: JSON.stringify(result),
     };
   } catch (error) {
     console.error('Error processing terrestrial data:', error);
-    
+
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: 'Failed to process terrestrial data',
-        message: error.message
-      })
+        message: error.message,
+      }),
     };
   }
 };
 
 module.exports = {
-  processTerrestrialData
+  processTerrestrialData,
 };

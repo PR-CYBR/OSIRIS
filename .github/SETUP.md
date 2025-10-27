@@ -75,22 +75,26 @@ To manually run the workflow:
 ### Branch-Specific Behavior
 
 #### Main Branch
+
 - Runs full production test suite
 - Updates README with test results
 - Deploys to GitHub Pages
 - Does NOT create auto-PRs
 
 #### Develop Branch
+
 - Runs development test suite
 - Updates README with test results
 - Does NOT create auto-PRs
 
 #### Feature Branches (`feature/*`)
+
 - Runs feature-specific tests
 - Creates auto-PR to `develop` if tests pass
 - Creates issue if tests fail
 
 #### Bugfix Branches (`bugfix/*`)
+
 - Runs bugfix validation tests
 - Creates auto-PR to `develop` if tests pass
 - Creates issue if tests fail
@@ -98,29 +102,38 @@ To manually run the workflow:
 ## Workflow Jobs
 
 ### 1. Test
+
 Runs branch-appropriate test suite and generates results.
 
 ### 2. Create Issue on Failure
+
 If tests fail, automatically creates a GitHub issue with:
+
 - Failure details
 - Link to workflow run
 - Branch and commit information
 - Auto-labels: `test-failure`, `automated`
 
 ### 3. Create Auto-PR
+
 For successful feature/bugfix branches:
+
 - Creates PR to `develop`
 - Includes test results
 - Skips if PR already exists
 
 ### 4. Update README
+
 On `main` and `develop`:
+
 - Updates "Latest Test Results" section
 - Includes timestamp and status
 - Auto-commits with `[skip ci]`
 
 ### 5. Deploy to GitHub Pages
+
 On `main` branch only:
+
 - Creates test results dashboard
 - Deploys to GitHub Pages
 - Accessible at: `https://<username>.github.io/<repository>/`
@@ -169,8 +182,8 @@ on:
     branches:
       - main
       - develop
-      - 'feature/**'    # Your custom pattern
-      - 'release/**'    # Add new patterns
+      - 'feature/**' # Your custom pattern
+      - 'release/**' # Add new patterns
 ```
 
 ## Monitoring
@@ -190,6 +203,7 @@ on:
 ### View Created Issues
 
 Issues created by workflow have labels:
+
 - `test-failure`
 - `automated`
 
@@ -198,6 +212,7 @@ Filter issues by these labels to find automated failure reports.
 ### View Auto-PRs
 
 Pull requests created by workflow have title format:
+
 - `Auto-PR: Merge <branch> (Tests Passed)`
 
 ## Troubleshooting
@@ -237,6 +252,7 @@ Pull requests created by workflow have title format:
 ## Support
 
 For issues or questions:
+
 - Check workflow logs in Actions tab
 - Review specification: `.github/spec/ci-cd-spec.md`
 - Open an issue in the repository
@@ -244,6 +260,7 @@ For issues or questions:
 ## Spec-Kit Compliance
 
 This workflow follows Spec-Kit conventions:
+
 - ✅ Specification-driven development
 - ✅ Clear naming conventions
 - ✅ Explicit documentation

@@ -187,3 +187,7 @@ config.local.js
 .cache/
 *.bak
 *.old
+
+# ATLAS Environmental Context data
+atlas_ctx/
+_probe/

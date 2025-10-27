@@ -1,6 +1,6 @@
 /**
  * Atmospheric Data Module - Main Entry Point
- * 
+ *
  * Monitors and analyzes atmospheric conditions including weather patterns,
  * air quality, flight tracking, and atmospheric composition.
  */
@@ -16,7 +16,7 @@ async function processAtmosphericData(_event) {
     status: 'processed',
     timestamp: new Date().toISOString(),
     module: 'atmospheric',
-    message: 'Atmospheric data processing not yet implemented'
+    message: 'Atmospheric data processing not yet implemented',
   };
 }
 
@@ -28,24 +28,24 @@ async function processAtmosphericData(_event) {
 exports.handler = async (event) => {
   try {
     const result = await processAtmosphericData(event);
-    
+
     return {
       statusCode: 200,
-      body: JSON.stringify(result)
+      body: JSON.stringify(result),
     };
   } catch (error) {
     console.error('Error processing atmospheric data:', error);
-    
+
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: 'Failed to process atmospheric data',
-        message: error.message
-      })
+        message: error.message,
+      }),
     };
   }
 };
 
 module.exports = {
-  processAtmosphericData
+  processAtmosphericData,
 };

@@ -56,6 +56,7 @@ OSIRIS is a cloud-native, serverless platform designed for multi-domain anomaly 
 ### Data Ingestion Layer
 
 Each domain module is responsible for:
+
 - Receiving data from external sources
 - Validating and normalizing input
 - Initial preprocessing
@@ -66,12 +67,14 @@ Each domain module is responsible for:
 ### Data Fusion Layer
 
 Correlates data across domains:
+
 - **Temporal Correlation**: Events occurring at similar times
 - **Spatial Correlation**: Events in the same geographic region
 - **Causal Correlation**: Events that may be related
 - **Quality Scoring**: Confidence in correlations
 
 **Algorithms**:
+
 - Kalman filtering for sensor fusion
 - Geohash-based spatial indexing
 - Sliding time windows
@@ -80,6 +83,7 @@ Correlates data across domains:
 ### Anomaly Detection Layer
 
 Identifies deviations from normal patterns:
+
 - **Unsupervised Learning**: Autoencoders, Isolation Forest
 - **Time Series Analysis**: LSTM networks
 - **Rule-Based Detection**: Threshold and complex event processing
@@ -90,6 +94,7 @@ Identifies deviations from normal patterns:
 ### Storage & API Layer
 
 Provides data persistence and access:
+
 - **Hot Data**: DynamoDB for recent events and real-time queries
 - **Cold Data**: S3 for historical data and model artifacts
 - **APIs**: RESTful endpoints for ingestion, query, and status
@@ -109,6 +114,7 @@ Provides data persistence and access:
 ### Serverless Architecture
 
 All compute is serverless using AWS Lambda:
+
 - **Auto-scaling**: Handles variable load automatically
 - **Cost-efficient**: Pay only for actual compute time
 - **No infrastructure management**: Focus on code, not servers
@@ -190,11 +196,13 @@ main → test → stage → prod → pages
 ## Technology Stack
 
 ### Runtime & Languages
+
 - **Primary**: Node.js 18+
 - **ML**: TensorFlow.js
 - **Infrastructure**: Terraform (planned)
 
 ### AWS Services
+
 - **Compute**: Lambda
 - **API**: API Gateway
 - **Storage**: DynamoDB, S3
@@ -203,6 +211,7 @@ main → test → stage → prod → pages
 - **CDN**: CloudFront
 
 ### Development Tools
+
 - **Testing**: Jest
 - **Linting**: ESLint
 - **Formatting**: Prettier

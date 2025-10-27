@@ -32,6 +32,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Sanitize artifact name
+        run: |
+          SAFE_NAME=$(echo "${{ github.head_ref || github.ref_name }}" | tr '/\\:*?"<>|\r\n' '-')
+          echo "SAFE_NAME=$SAFE_NAME" >> $GITHUB_ENV
+
       - name: Setup test environment
         run: |
           echo "Setting up test environment for branch: ${{ github.ref_name }}"
@@ -75,7 +80,7 @@ jobs:
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ github.ref_name }}-${{ github.run_number }}
+          name: test-results-${{ env.SAFE_NAME }}-${{ github.run_number }}
           path: test-results/
 
   # Job 2: Create issue for failed tests
@@ -197,10 +202,15 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Sanitize artifact name
+        run: |
+          SAFE_NAME=$(echo "${{ github.head_ref || github.ref_name }}" | tr '/\\:*?"<>|\r\n' '-')
+          echo "SAFE_NAME=$SAFE_NAME" >> $GITHUB_ENV
+
       - name: Download test results
         uses: actions/download-artifact@v4
         with:
-          name: test-results-${{ github.ref_name }}-${{ github.run_number }}
+          name: test-results-${{ env.SAFE_NAME }}-${{ github.run_number }}
           path: test-results/
 
       - name: Update README with test summary
@@ -269,10 +279,15 @@ jobs:
         with:
           ref: main
 
+      - name: Sanitize artifact name
+        run: |
+          SAFE_NAME=$(echo "${{ github.head_ref || github.ref_name }}" | tr '/\\:*?"<>|\r\n' '-')
+          echo "SAFE_NAME=$SAFE_NAME" >> $GITHUB_ENV
+
       - name: Download test results
         uses: actions/download-artifact@v4
         with:
-          name: test-results-${{ github.ref_name }}-${{ github.run_number }}
+          name: test-results-${{ env.SAFE_NAME }}-${{ github.run_number }}
           path: docs/test-results/
 
       - name: Create GitHub Pages content

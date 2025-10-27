@@ -12,14 +12,14 @@ A self-updating, AI-driven platform for multi-domain anomaly detection, fusing o
 
 ## 📊 System Status
 
-| Component | Status | Last Updated |
-|-----------|--------|--------------|
-| 🛰️ Orbital Module | 🔄 Initializing | - |
-| 🌤️ Atmospheric Module | 🔄 Initializing | - |
-| 🌍 Terrestrial Module | 🔄 Initializing | - |
-| 🔀 Data Fusion | 🔄 Initializing | - |
-| 🎯 Anomaly Detection | 🔄 Initializing | - |
-| 📡 API Gateway | 🔄 Initializing | - |
+| Component             | Status          | Last Updated |
+| --------------------- | --------------- | ------------ |
+| 🛰️ Orbital Module     | 🔄 Initializing | -            |
+| 🌤️ Atmospheric Module | 🔄 Initializing | -            |
+| 🌍 Terrestrial Module | 🔄 Initializing | -            |
+| 🔀 Data Fusion        | 🔄 Initializing | -            |
+| 🎯 Anomaly Detection  | 🔄 Initializing | -            |
+| 📡 API Gateway        | 🔄 Initializing | -            |
 
 **Legend:** ✅ Operational | ⚠️ Degraded | ❌ Down | 🔄 Initializing | 🚧 In Development
 
@@ -149,12 +149,15 @@ This project is released under the MIT License. See [LICENSE](LICENSE) for detai
 Last updated: 2025-10-24 19:19:29 UTC
 
 ## Test Results
+
 - **Branch**: main
 - **Commit**: 3b929f94bc1d45256a2360e78b791d8c6053d4f4
 - **Status**: success
 - **Summary**: All tests passed
 - **Timestamp**: 2025-10-24 19:19:15 UTC
+
 ## Test Results
+
 - **Branch**: main
 - **Commit**: d3af5a5efb55390d86f37e7338f4e8df82a3d670
 - **Status**: success
