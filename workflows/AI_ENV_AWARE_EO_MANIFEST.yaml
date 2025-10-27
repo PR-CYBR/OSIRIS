@@ -1,0 +1,178 @@
+---
+AI_ENV_AWARE_EO_MANIFEST:
+  meta:
+    name: "3I/ATLAS Environmental Context Acquisition"
+    version: "1.0.0"
+    intent: >
+      Collect near‑real‑time Earth‑observation context layers aligned to satellite
+      overpasses to support situational awareness, planning, and analysis.
+    assumptions:
+      - AI may or may not have: web browser, HTTP client, shell, file system, image renderer.
+      - AI can read YAML and follow deterministic step logic.
+      - If capability is missing, AI must downshift to next fallback or request human help.
+    success_criteria:
+      - "For each requested footprint/time, produce: a) georeferenced image tiles or snapshot, b) machine‑readable metadata (JSON), c) provenance + integrity evidence."
+
+  capability_matrix:
+    test_order: [can_http, can_filesystem, can_render_image, can_unzip, can_hash, can_prompt_human]
+    probes:
+      can_http:
+        action: "Attempt HEAD to https://gibs.earthdata.nasa.gov/robots.txt"
+        expect_http_status_prefix: 2
+      can_filesystem:
+        action: "Attempt to create and delete a temp file in ./_probe"
+      can_render_image:
+        action: "Verify ability to save a PNG/JPEG and open/read dimensions"
+      can_unzip:
+        action: "Verify ability to unzip a small archive"
+      can_hash:
+        action: "Compute SHA256 of a small string and match known digest"
+      can_prompt_human:
+        action: "If all else fails, ask operator for manual download consent/assistance"
+
+  products:
+    - id: MODIS_Terra_TrueColor
+      purpose: "Daylight optical context for footprints"
+      priority: 1
+      default_opacity: 0.7
+      endpoints:
+        - kind: WMTS
+          url_template: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/{tile_matrix_set}/{tile_matrix}/{tile_row}/{tile_col}.jpg"
+          projection: "EPSG:4326"
+          tile_matrix_sets: ["250m","500m","1km","2km"]
+        - kind: SNAPSHOT_API
+          url_template: "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME={time}&BBOX={miny},{minx},{maxy},{maxx}&CRS=EPSG:4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image/jpeg&WIDTH={width}&HEIGHT={height}"
+    - id: VIIRS_DayNightBand_Radiance
+      purpose: "Night illumination / outages"
+      priority: 2
+      default_opacity: 0.8
+      endpoints:
+        - kind: WMTS
+          url_template: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_DayNightBand_Radiance/default/{time}/{tile_matrix_set}/{tile_matrix}/{tile_row}/{tile_col}.jpg"
+          projection: "EPSG:4326"
+          tile_matrix_sets: ["1km","2km","4km"]
+        - kind: SNAPSHOT_API
+          url_template: "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME={time}&BBOX={miny},{minx},{maxy},{maxx}&CRS=EPSG:4326&LAYERS=VIIRS_DayNightBand_Radiance&FORMAT=image/jpeg&WIDTH={width}&HEIGHT={height}"
+    - id: VIIRS_Cloud_Mask_Day
+      purpose: "Imaging window planning / cloud screening"
+      priority: 3
+      endpoints:
+        - kind: WMTS
+          url_template: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_SNPP_Cloud_Mask_Day/default/{time}/{tile_matrix_set}/{tile_matrix}/{tile_row}/{tile_col}.png"
+          projection: "EPSG:4326"
+          tile_matrix_sets: ["1km","2km","4km"]
+        - kind: SNAPSHOT_API
+          url_template: "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME={time}&BBOX={miny},{minx},{maxy},{maxx}&CRS=EPSG:4326&LAYERS=VIIRS_SNPP_Cloud_Mask_Day&FORMAT=image/png&WIDTH={width}&HEIGHT={height}"
+    - id: MODIS_Active_Fire
+      purpose: "Thermal anomaly cueing (wildfire/industrial)"
+      priority: 4
+      endpoints:
+        - kind: WMTS
+          url_template: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/MODIS_C6_ActiveFire/default/{time}/{tile_matrix_set}/{tile_matrix}/{tile_row}/{tile_col}.png"
+          projection: "EPSG:4326"
+          tile_matrix_sets: ["4km","2km","1km"]
+        - kind: SNAPSHOT_API
+          url_template: "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME={time}&BBOX={miny},{minx},{maxy},{maxx}&CRS=EPSG:4326&LAYERS=MODIS_C6_ActiveFire&FORMAT=image/png&WIDTH={width}&HEIGHT={height}"
+    - id: VIIRS_SST
+      purpose: "Sea surface temperature (maritime context)"
+      priority: 5
+      endpoints:
+        - kind: WMTS
+          url_template: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_SST_NPP/default/{time}/{tile_matrix_set}/{tile_matrix}/{tile_row}/{tile_col}.png"
+          projection: "EPSG:4326"
+          tile_matrix_sets: ["4km","2km","1km"]
+        - kind: SNAPSHOT_API
+          url_template: "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME={time}&BBOX={miny},{minx},{maxy},{maxx}&CRS=EPSG:4326&LAYERS=VIIRS_SST_NPP&FORMAT=image/png&WIDTH={width}&HEIGHT={height}"
+    - id: OMI_UV_Aerosol_Index
+      purpose: "Smoke/dust/aerosol interference for EO"
+      priority: 6
+      endpoints:
+        - kind: WMTS
+          url_template: "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/OMI_UVAI/default/{time}/{tile_matrix_set}/{tile_matrix}/{tile_row}/{tile_col}.png"
+          projection: "EPSG:4326"
+          tile_matrix_sets: ["4km","2km"]
+        - kind: SNAPSHOT_API
+          url_template: "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME={time}&BBOX={miny},{minx},{maxy},{maxx}&CRS=EPSG:4326&LAYERS=OMI_UVAI&FORMAT=image/png&WIDTH={width}&HEIGHT={height}"
+
+  inputs:
+    footprints:
+      description: "WGS84 polygons or bbox per satellite pass"
+      format: "GeoJSON FeatureCollection OR simple BBOX list"
+      default_bbox: [-68.0, 16.5, -64.0, 19.5]
+    times:
+      description: "ISO‑8601 time(s) to sample; nearest available imagery is acceptable"
+      default: "latest"
+      tolerance: "PT6H"
+    imaging_prefs:
+      width: 2048
+      height: 2048
+      tile_matrix_set_preference_order: ["1km","2km","4km"]
+      format_priority: ["png","jpg"]
+
+  plan:
+    - step: "Assess capabilities"
+      do:
+        - "run_capability_probes"
+        - "record which fallbacks are permissible"
+    - step: "Normalize ROI"
+      do:
+        - "if input is GeoJSON polygons, compute their union bbox"
+        - "else if BBOX list, pick smallest bbox that contains all"
+    - step: "Resolve time(s)"
+      do:
+        - "if time == 'latest', pick most recent time supported by chosen endpoint"
+        - "if specific time not available, pick nearest within tolerance"
+    - step: "Acquisition per product by priority"
+      loop: "products sorted by priority"
+      do:
+        - "if can_http:"
+        - "  prefer WMTS tiling if ROI area > 15° bbox edge"
+        - "  else use SNAPSHOT_API for single image"
+        - "else:"
+        - "  if can_prompt_human: request manual download with exact constructed URL(s)"
+        - "  else: create retrieval plan text output with URLs"
+    - step: "Integrity & provenance"
+      do:
+        - "compute sha256 for each file (if can_hash)"
+        - "write metadata.json with fields: product_id, endpoint_kind, time_actual, bbox, projection, urls_used, http_status, content_length, sha256"
+    - step: "Storage"
+      do:
+        - "if can_filesystem: store under ./atlas_ctx/{YYYYMMDD_HHMM}/{product_id}/"
+        - "else: emit base64‑encoded payloads with metadata in final report"
+    - step: "Validation"
+      do:
+        - "verify at least one layer fetched; if none, escalate to next fallback or human prompt"
+        - "ensure image dimensions match request (±5%)"
+    - step: "Report"
+      do:
+        - "produce machine‑readable summary (JSON Lines) and human summary (Markdown)"
+
+  fallbacks:
+    rate_limit:
+      strategy: "exponential_backoff"
+      base_ms: 500
+      max_retries: 6
+    endpoint_order: ["WMTS","SNAPSHOT_API"]
+    offline_mode:
+      behavior: >
+        If no HTTP available, emit full set of constructed URLs, timestamps, and a
+        human‑action checklist to fetch files; accept pasted files later for hashing/validation.
+
+  outputs:
+    directory_schema: "./atlas_ctx/{YYYYMMDD_HHMM}/{product_id}/"
+    files:
+      - "{product_id}_{time_actual}_{bbox_hash}.(png|jpg)"
+      - "metadata.json"
+      - "provenance.txt"
+    jsonl_summary: "./atlas_ctx/summary_{YYYYMMDD_HHMM}.jsonl"
+    visualization_hint:
+      - "Stack TrueColor under CloudMask; apply 0.5‑0.7 opacity to overlays."
+      - "Use EPSG:4326; if renderer supports it, reproject on display only."
+
+  governance:
+    licensing_note: "NASA GIBS browse imagery is open for public use; cite NASA/GIBS."
+    pii_statement: "No PII expected."
+    explainability_requirements:
+      - "Record chosen time and nearest‑available delta (minutes)."
+      - "Record why endpoint/fallback was selected."
+      - "Record any manual operator involvement."

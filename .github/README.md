@@ -5,21 +5,29 @@ Welcome to the OSIRIS CI/CD workflow documentation directory. This folder contai
 ## 📚 Quick Navigation
 
 ### Getting Started
+
 Start here if this is your first time setting up the workflow:
+
 - **[SETUP.md](SETUP.md)** - Complete setup guide with step-by-step instructions
 
 ### Understanding the Workflow
+
 Learn how the workflow operates in different scenarios:
+
 - **[EXAMPLES.md](EXAMPLES.md)** - 8 real-world usage examples
 - **[WORKFLOW-VISUALIZATION.md](WORKFLOW-VISUALIZATION.md)** - Architecture diagrams and visual flow charts
 
 ### Technical Details
+
 For developers and maintainers:
+
 - **[IMPLEMENTATION-SUMMARY.md](IMPLEMENTATION-SUMMARY.md)** - Complete technical implementation details
 - **[spec/ci-cd-spec.md](spec/ci-cd-spec.md)** - Spec-Kit compliant specification
 
 ### Workflow File
+
 The actual GitHub Action workflow:
+
 - **[workflows/osiris-ci.yml](workflows/osiris-ci.yml)** - Main CI/CD workflow definition
 
 ## 🎯 What Does This Workflow Do?
@@ -35,6 +43,7 @@ The OSIRIS CI/CD workflow automates:
 ## 📖 Documentation Guide
 
 ### For First-Time Users
+
 ```
 1. Read: SETUP.md (setup instructions)
 2. Read: EXAMPLES.md (see it in action)
@@ -42,6 +51,7 @@ The OSIRIS CI/CD workflow automates:
 ```
 
 ### For Understanding the Architecture
+
 ```
 1. Read: WORKFLOW-VISUALIZATION.md (visual overview)
 2. Read: workflows/osiris-ci.yml (actual workflow)
@@ -49,6 +59,7 @@ The OSIRIS CI/CD workflow automates:
 ```
 
 ### For Troubleshooting
+
 ```
 1. Check: SETUP.md → Troubleshooting section
 2. Review: Workflow logs in GitHub Actions tab
@@ -56,6 +67,7 @@ The OSIRIS CI/CD workflow automates:
 ```
 
 ### For Customization
+
 ```
 1. Read: IMPLEMENTATION-SUMMARY.md → Customization section
 2. Read: spec/ci-cd-spec.md → Component descriptions
@@ -65,33 +77,39 @@ The OSIRIS CI/CD workflow automates:
 
 ## 📋 Document Overview
 
-| Document | Purpose | Audience | Length |
-|----------|---------|----------|--------|
-| **SETUP.md** | Setup & configuration guide | All users | ~270 lines |
-| **EXAMPLES.md** | Real-world usage scenarios | All users | ~274 lines |
-| **WORKFLOW-VISUALIZATION.md** | Architecture diagrams | Developers | ~400 lines |
-| **IMPLEMENTATION-SUMMARY.md** | Technical details | Developers | ~325 lines |
-| **spec/ci-cd-spec.md** | Formal specification | Maintainers | ~130 lines |
-| **workflows/osiris-ci.yml** | Workflow definition | Developers | ~395 lines |
+| Document                      | Purpose                     | Audience    | Length     |
+| ----------------------------- | --------------------------- | ----------- | ---------- |
+| **SETUP.md**                  | Setup & configuration guide | All users   | ~270 lines |
+| **EXAMPLES.md**               | Real-world usage scenarios  | All users   | ~274 lines |
+| **WORKFLOW-VISUALIZATION.md** | Architecture diagrams       | Developers  | ~400 lines |
+| **IMPLEMENTATION-SUMMARY.md** | Technical details           | Developers  | ~325 lines |
+| **spec/ci-cd-spec.md**        | Formal specification        | Maintainers | ~130 lines |
+| **workflows/osiris-ci.yml**   | Workflow definition         | Developers  | ~395 lines |
 
 ## 🔍 Common Tasks
 
 ### Enable the Workflow
+
 👉 See: [SETUP.md](SETUP.md) → Setup Instructions
 
 ### Test the Workflow
+
 👉 See: [EXAMPLES.md](EXAMPLES.md) → Example 6: Manual Workflow Trigger
 
 ### Fix Failed Tests
+
 👉 See: [EXAMPLES.md](EXAMPLES.md) → Example 8: Handling Test Failure Issue
 
 ### Customize Test Suites
+
 👉 See: [IMPLEMENTATION-SUMMARY.md](IMPLEMENTATION-SUMMARY.md) → Customization
 
 ### Understand Job Flow
+
 👉 See: [WORKFLOW-VISUALIZATION.md](WORKFLOW-VISUALIZATION.md) → Workflow Architecture
 
 ### Deploy to GitHub Pages
+
 👉 See: [SETUP.md](SETUP.md) → Enable GitHub Pages
 
 ## 🏗️ Workflow Structure
@@ -118,6 +136,7 @@ The OSIRIS CI/CD workflow automates:
 ## ⚡ Quick Reference
 
 ### Workflow Jobs
+
 1. `test` - Run tests
 2. `create-issue-on-failure` - Create issue if tests fail
 3. `create-auto-pr` - Create PR if tests pass (feature/bugfix only)
@@ -125,12 +144,14 @@ The OSIRIS CI/CD workflow automates:
 5. `deploy-pages` - Deploy to Pages (main only)
 
 ### Branch Behavior
+
 - `main` → Full tests + README + Pages
 - `develop` → Dev tests + README
 - `feature/*` → Feature tests + Auto-PR
 - `bugfix/*` → Bugfix tests + Auto-PR
 
 ### Required Permissions
+
 - `contents: write`
 - `issues: write`
 - `pull-requests: write`
@@ -159,6 +180,7 @@ Need help? Check these resources in order:
 ## 🔐 Security
 
 All workflows have been:
+
 - ✅ Scanned with CodeQL (0 vulnerabilities)
 - ✅ Reviewed for security best practices
 - ✅ Configured with minimal permissions

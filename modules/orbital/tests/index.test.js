@@ -11,7 +11,7 @@ describe('Orbital Data Module', () => {
         timestamp: '2024-01-01T00:00:00Z',
         source: 'test-satellite',
         type: 'tle',
-        data: {}
+        data: {},
       };
 
       const result = await processOrbitalData(event);

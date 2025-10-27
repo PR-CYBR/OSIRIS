@@ -1,6 +1,6 @@
 /**
  * Orbital Data Module - Main Entry Point
- * 
+ *
  * Processes data from space-based sources including satellites,
  * orbital objects, space weather, and RF emissions.
  */
@@ -16,7 +16,7 @@ async function processOrbitalData(_event) {
     status: 'processed',
     timestamp: new Date().toISOString(),
     module: 'orbital',
-    message: 'Orbital data processing not yet implemented'
+    message: 'Orbital data processing not yet implemented',
   };
 }
 
@@ -28,24 +28,24 @@ async function processOrbitalData(_event) {
 exports.handler = async (event) => {
   try {
     const result = await processOrbitalData(event);
-    
+
     return {
       statusCode: 200,
-      body: JSON.stringify(result)
+      body: JSON.stringify(result),
     };
   } catch (error) {
     console.error('Error processing orbital data:', error);
-    
+
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: 'Failed to process orbital data',
-        message: error.message
-      })
+        message: error.message,
+      }),
     };
   }
 };
 
 module.exports = {
-  processOrbitalData
+  processOrbitalData,
 };

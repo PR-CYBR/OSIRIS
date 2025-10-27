@@ -43,6 +43,7 @@ OSIRIS follows a **specification-driven development** approach using the [Spec-K
 ### 1. Check Specifications
 
 Before making changes:
+
 - Review [constitution](.specify/constitution.md) for project principles
 - Check [spec](.specify/spec.md) for technical requirements
 - Read [plan](.specify/plan.md) for implementation roadmap
@@ -54,6 +55,7 @@ git checkout -b feature/your-feature-name
 ```
 
 Branch naming conventions:
+
 - `feature/` - New features
 - `fix/` - Bug fixes
 - `docs/` - Documentation updates
@@ -92,6 +94,7 @@ git commit -m "type(scope): description"
 ```
 
 Types:
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation changes
@@ -189,6 +192,7 @@ PRs are automatically tested. Merges to main trigger the promotion pipeline.
 ### Bug Reports
 
 Include:
+
 - Clear description of the bug
 - Steps to reproduce
 - Expected vs actual behavior
@@ -198,6 +202,7 @@ Include:
 ### Feature Requests
 
 Include:
+
 - Clear description of the feature
 - Use case and motivation
 - Proposed implementation (if any)
