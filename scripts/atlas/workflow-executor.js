@@ -343,10 +343,9 @@ async function main() {
     const result = await executeWorkflow(manifest, inputs);
 
     // Output execution summary
-    await fs.writeFile(
-      path.join(inputs.outputDir || './atlas_ctx', 'execution.json'),
-      JSON.stringify(result, null, 2)
-    );
+    const outputDir = inputs.outputDir || './atlas_ctx';
+    await fs.mkdir(outputDir, { recursive: true });
+    await fs.writeFile(path.join(outputDir, 'execution.json'), JSON.stringify(result, null, 2));
 
     process.exit(0);
   } catch (error) {
