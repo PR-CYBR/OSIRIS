@@ -1,0 +1,20 @@
+sequenceDiagram
+actor Dev
+participant GitHub
+participant Runner
+Dev->>GitHub: triggers "Auto PR from main to stage"
+GitHub->>Runner: dispatch
+loop Auto PR from main to stage
+end
+Dev->>GitHub: triggers "Auto PR from main to test"
+GitHub->>Runner: dispatch
+loop Auto PR from main to test
+end
+Dev->>GitHub: triggers "Auto PR from prod to pages"
+GitHub->>Runner: dispatch
+loop Auto PR from prod to pages
+end
+Dev->>GitHub: triggers "Auto PR from stage to prod"
+GitHub->>Runner: dispatch
+loop Auto PR from stage to prod
+end
