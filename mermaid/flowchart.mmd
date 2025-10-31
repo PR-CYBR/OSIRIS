@@ -1,0 +1,127 @@
+flowchart TB
+classDef dir fill:#eef,stroke:#99c,stroke-width:1px;
+d__["OSIRIS/"]:::dir
+f__eslintrc_js[".eslintrc.js"]
+f__gitignore[".gitignore"]
+f__markdownlint_cli2_yaml[".markdownlint-cli2.yaml"]
+f__markmapignore[".markmapignore"]
+f__mermaidignore[".mermaidignore"]
+f__prettierrc_json[".prettierrc.json"]
+d__specify[".specify/"]:::dir
+f__specify_constitution_md["constitution.md"]
+f__specify_plan_md["plan.md"]
+f__specify_spec_md["spec.md"]
+f_CONTRIBUTING_md["CONTRIBUTING.md"]
+d_docs["docs/"]:::dir
+f_docs__config_yml["_config.yml"]
+d_docs_architecture["architecture/"]:::dir
+f_docs_architecture_overview_md["overview.md"]
+f_jest_config_js["jest.config.js"]
+f_LICENSE["LICENSE"]
+d_mermaid["mermaid/"]:::dir
+f_mermaid_architecture_mmd["architecture.mmd"]
+f_mermaid_bpmnish_mmd["bpmnish.mmd"]
+f_mermaid_ci_sequence_mmd["ci-sequence.mmd"]
+f_mermaid_er_mmd["er.mmd"]
+f_mermaid_flowchart_mmd["flowchart.mmd"]
+d_modules["modules/"]:::dir
+d_modules_atmospheric["atmospheric/"]:::dir
+f_modules_atmospheric_README_md["README.md"]
+d_modules_atmospheric_src["src/"]:::dir
+f_modules_atmospheric_src_index_js["index.js"]
+d_modules_detection["detection/"]:::dir
+f_modules_detection_README_md["README.md"]
+d_modules_fusion["fusion/"]:::dir
+f_modules_fusion_README_md["README.md"]
+d_modules_orbital["orbital/"]:::dir
+f_modules_orbital_README_md["README.md"]
+d_modules_orbital_src["src/"]:::dir
+f_modules_orbital_src_index_js["index.js"]
+d_modules_orbital_tests["tests/"]:::dir
+f_modules_orbital_tests_index_test_js["index.test.js"]
+d_modules_terrestrial["terrestrial/"]:::dir
+f_modules_terrestrial_README_md["README.md"]
+d_modules_terrestrial_src["src/"]:::dir
+f_modules_terrestrial_src_index_js["index.js"]
+f_package_lock_json["package-lock.json"]
+f_package_json["package.json"]
+f_README_md["README.md"]
+d_scripts["scripts/"]:::dir
+d_scripts_atlas["atlas/"]:::dir
+f_scripts_atlas_capability_probe_js["capability-probe.js"]
+f_scripts_atlas_data_fetcher_js["data-fetcher.js"]
+f_scripts_atlas_workflow_executor_js["workflow-executor.js"]
+f_scripts_generate_markmap_mjs["generate-markmap.mjs"]
+f_scripts_generate_mermaid_mjs["generate-mermaid.mjs"]
+f_scripts_generate_status_js["generate-status.js"]
+d_tests["tests/"]:::dir
+d_tests_atlas["atlas/"]:::dir
+f_tests_atlas_capability_probe_test_js["capability-probe.test.js"]
+f_tests_atlas_data_fetcher_test_js["data-fetcher.test.js"]
+f_tests_atlas_workflow_executor_test_js["workflow-executor.test.js"]
+f_tests_run_tests_sh["run-tests.sh"]
+d_workflows["workflows/"]:::dir
+f_workflows_AI_ENV_AWARE_EO_MANIFEST_yaml["AI_ENV_AWARE_EO_MANIFEST.yaml"]
+f_workflows_README_md["README.md"]
+d__ --> f__eslintrc_js
+d__ --> f__gitignore
+d__ --> f__markdownlint_cli2_yaml
+d__ --> f__markmapignore
+d__ --> f__mermaidignore
+d__ --> f__prettierrc_json
+d__ --> d__specify
+d__specify --> f__specify_constitution_md
+d__specify --> f__specify_plan_md
+d__specify --> f__specify_spec_md
+d__ --> f_CONTRIBUTING_md
+d__ --> d_docs
+d_docs --> f_docs__config_yml
+d_docs --> d_docs_architecture
+d_docs_architecture --> f_docs_architecture_overview_md
+d__ --> f_jest_config_js
+d__ --> f_LICENSE
+d__ --> d_mermaid
+d_mermaid --> f_mermaid_architecture_mmd
+d_mermaid --> f_mermaid_bpmnish_mmd
+d_mermaid --> f_mermaid_ci_sequence_mmd
+d_mermaid --> f_mermaid_er_mmd
+d_mermaid --> f_mermaid_flowchart_mmd
+d__ --> d_modules
+d_modules --> d_modules_atmospheric
+d_modules_atmospheric --> f_modules_atmospheric_README_md
+d_modules_atmospheric --> d_modules_atmospheric_src
+d_modules_atmospheric_src --> f_modules_atmospheric_src_index_js
+d_modules --> d_modules_detection
+d_modules_detection --> f_modules_detection_README_md
+d_modules --> d_modules_fusion
+d_modules_fusion --> f_modules_fusion_README_md
+d_modules --> d_modules_orbital
+d_modules_orbital --> f_modules_orbital_README_md
+d_modules_orbital --> d_modules_orbital_src
+d_modules_orbital_src --> f_modules_orbital_src_index_js
+d_modules_orbital --> d_modules_orbital_tests
+d_modules_orbital_tests --> f_modules_orbital_tests_index_test_js
+d_modules --> d_modules_terrestrial
+d_modules_terrestrial --> f_modules_terrestrial_README_md
+d_modules_terrestrial --> d_modules_terrestrial_src
+d_modules_terrestrial_src --> f_modules_terrestrial_src_index_js
+d__ --> f_package_lock_json
+d__ --> f_package_json
+d__ --> f_README_md
+d__ --> d_scripts
+d_scripts --> d_scripts_atlas
+d_scripts_atlas --> f_scripts_atlas_capability_probe_js
+d_scripts_atlas --> f_scripts_atlas_data_fetcher_js
+d_scripts_atlas --> f_scripts_atlas_workflow_executor_js
+d_scripts --> f_scripts_generate_markmap_mjs
+d_scripts --> f_scripts_generate_mermaid_mjs
+d_scripts --> f_scripts_generate_status_js
+d__ --> d_tests
+d_tests --> d_tests_atlas
+d_tests_atlas --> f_tests_atlas_capability_probe_test_js
+d_tests_atlas --> f_tests_atlas_data_fetcher_test_js
+d_tests_atlas --> f_tests_atlas_workflow_executor_test_js
+d_tests --> f_tests_run_tests_sh
+d__ --> d_workflows
+d_workflows --> f_workflows_AI_ENV_AWARE_EO_MANIFEST_yaml
+d_workflows --> f_workflows_README_md
