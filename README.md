@@ -140,6 +140,14 @@ This project is released under the MIT License. See [LICENSE](LICENSE) for detai
 - [Issue Tracker](https://github.com/PR-CYBR/OSIRIS/issues)
 - [Spec-Kit Framework](https://github.com/PR-CYBR/spec-bootstrap)
 
+## 🗺️ Live Codebase Mindmap
+
+Auto-generated on each push: **repo-map.html** (via GitHub Pages and CI artifact).
+
+When Pages is enabled, it will be served at: `https://PR-CYBR.github.io/OSIRIS/repo-map.html`
+
+The mindmap provides an interactive visualization of the repository structure with language statistics.
+
 ---
 
 **Platform for All-Domain Anomaly Tracking**
