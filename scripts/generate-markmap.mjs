@@ -74,7 +74,6 @@ async function walk(dir, depth = 0) {
     if (totalEntries++ > MAX_ENTRIES) break;
 
     const full = path.join(dir, e.name);
-    const rel = path.relative(root, full);
 
     if (e.isDirectory()) {
       md += `${"  ".repeat(depth)}- **${e.name}/**\n`;
