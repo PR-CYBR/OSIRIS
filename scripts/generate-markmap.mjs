@@ -37,7 +37,7 @@ const LANGUAGE_EXT_MAP = {
   ".cs": "C#", ".rb": "Ruby", ".php": "PHP",
   ".sh": "Shell", ".ps1": "PowerShell",
   ".scala": "Scala", ".swift": "Swift",
-  ".m": "Objective‑C", ".mm": "Objective‑C++",
+  ".m": "Objective-C", ".mm": "Objective-C++",
   ".r": "R", ".lua": "Lua"
 };
 
@@ -70,8 +70,8 @@ async function walk(dir, depth = 0) {
   entries.sort((a,b) => a.name.localeCompare(b.name));
   let md = "";
   for (const e of entries) {
-    if (totalEntries++ > MAX_ENTRIES) break;
     if (e.name === ".DS_Store" || IGNORES.has(e.name)) continue;
+    if (totalEntries++ > MAX_ENTRIES) break;
 
     const full = path.join(dir, e.name);
     const rel = path.relative(root, full);
@@ -105,7 +105,7 @@ const topLangs = Array.from(extCounts.entries())
   })
   .join("\n");
 
-const frontmatter = `--- 
+const frontmatter = `---
 markmap:
   initialExpandLevel: 2
   maxWidth: 320
