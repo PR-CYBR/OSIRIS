@@ -191,3 +191,6 @@ config.local.js
 # ATLAS Environmental Context data
 atlas_ctx/
 _probe/
+
+# Markmap generated files (built in CI)
+markmap/
