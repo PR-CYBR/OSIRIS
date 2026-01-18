@@ -31,7 +31,7 @@ function parseTLE(tleData) {
 
   // Calculate orbital period in minutes
   // Period = 1440 minutes / mean motion (revs/day)
-  const orbitalPeriod = meanMotion > 0 ? (1440 / meanMotion).toFixed(2) : null;
+  const orbitalPeriod = meanMotion > 0 ? `${(1440 / meanMotion).toFixed(2)} min` : 'unknown';
 
   // Extract inclination from line 2 (columns 9-16)
   const inclination = parseFloat(line2.substring(8, 16).trim());
@@ -43,7 +43,7 @@ function parseTLE(tleData) {
 
   return {
     noradId,
-    orbitalPeriod: orbitalPeriod ? `${orbitalPeriod} min` : 'unknown',
+    orbitalPeriod,
     meanMotion,
     inclination,
     eccentricity
